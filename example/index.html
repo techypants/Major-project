@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas Mouse Click Coordinates</title>
+    <style>
+        body{
+            background:white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cnv" width="500" height="500" style="border: 1px solid gray; background: black;"></canvas>
+    <input id="count">
+    <button id="sub">Submit</button>
+    <script>
+        var cnv = document.getElementById('cnv');
+        var ctx = cnv.getContext('2d');
+        width=cnv.width;
+        height=cnv.height;
+        function degrees(degrees) {
+           return degrees * (Math.PI / 180);
+        }
+        let arr=[];
+        
+
+
+        cnv.addEventListener('click', function(event) {
+            var x = event.clientX - cnv.getBoundingClientRect().left;
+            var y = event.clientY - cnv.getBoundingClientRect().top;
+            logCoordinates(x, y);
+        });
+
+        function draw(x,y){
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, Math.PI * 2, false);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.closePath();
+            
+           let  points=[x,y];
+            arr.push(points);
+            console.log(arr);
+
+ /*            arr.forEach(function (point, index) {
+                if (index > 0) { // Check if it's not the first point
+                    let x1 = parseInt(point[0]);
+                    let y1 = parseInt(point[1]);
+                    
+                    let previousPoint = arr[index - 1];
+                    let x2 = previousPoint[0];
+                    let y2 = previousPoint[1];
+                    
+                    drawlines(x1, y1, x2, y2);
+                } */
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = i + 1; j < arr.length; j++) {
+                        let x1 = parseInt(arr[i][0]);
+                        let y1 = parseInt(arr[i][1]);
+                        let x2 = parseInt(arr[j][0]);
+                        let y2 = parseInt(arr[j][1]);
+                        drawlines(x1, y1, x2, y2);
+                    }
+                }
+             
+                var img=new Image();
+            img.src="pc.png";
+            img.onload = function(){
+                ctx.drawImage(img,x-25,y-25,50,50);
+            };
+        }
+            
+
+        
+        function drawlines(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); // Use moveTo to specify the starting point
+    ctx.lineTo(x2, y2); // Use lineTo to specify the endpoint
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 1; 
+    ctx.stroke();
+    ctx.closePath();
+}
+
+        function logCoordinates(x, y) {
+            console.log('Clicked at (x, y):', x, y);
+            draw(x,y);
+
+        }
+
+        function getcircles(){
+            btn = document.getElementById('sub');
+            cnt = document.getElementById('count'); 
+            btn.addEventListener('click',function(){
+                input = cnt.value;
+                console.log(input);
+
+                display(parseInt(input));
+                count.value="";
+            })
+        }
+        function display(val) {
+            
+            for(let i=0;i<val;i++){
+            var angle = degrees(i*360/val);
+
+            var posX = Math.cos(angle);
+            var posY = Math.sin(angle);
+            
+            var canvasX = Math.ceil((width/4) * posX);
+            var canvasY = Math.ceil((height/4) * posY);
+            
+            draw((width/2)+canvasX, (height/2)+canvasY);
+            console.log((width/2)+canvasX, (height/2)+canvasY);
+            }
+        }
+        getcircles();
+
+
+
+    </script>
+</body>
+</html>
